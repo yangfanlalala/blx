@@ -1,7 +1,7 @@
 package bce
 
 import (
-	"blxee.com/utils/network"
+	"github.com/yangfanlalala/blx/network"
 	"encoding/json"
 	"fmt"
 	"io/ioutil"

@@ -1,7 +1,7 @@
 package bce
 
 import (
-	"blxee.com/utils/common"
+	"github.com/yangfanlalala/blx/common"
 	"fmt"
 	"testing"
 	"time"

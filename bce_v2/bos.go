@@ -1,9 +1,9 @@
 package bce
 
 import (
-	"blxee.com/utils/common"
-	"blxee.com/utils/crypto"
-	"blxee.com/utils/network"
+	"github.com/yangfanlalala/blx/common"
+	"github.com/yangfanlalala/blx/crypto"
+	"github.com/yangfanlalala/blx/network"
 	"bufio"
 	"encoding/base64"
 	"encoding/json"

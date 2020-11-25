@@ -1,8 +1,8 @@
 package aliyun
 
 import (
-	"blxee.com/utils/common"
-	"blxee.com/utils/crypto"
+	"github.com/yangfanlalala/blx/common"
+	"github.com/yangfanlalala/blx/crypto"
 	"bytes"
 	"encoding/json"
 	"fmt"

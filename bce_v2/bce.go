@@ -1,9 +1,9 @@
 package bce
 
 import (
-	"blxee.com/utils/common"
-	"blxee.com/utils/crypto"
-	blxHttp "blxee.com/utils/network"
+	"github.com/yangfanlalala/blx/common"
+	"github.com/yangfanlalala/blx/crypto"
+	blxHttp "github.com/yangfanlalala/blx/network"
 	"net/http"
 	"net/url"
 	"sort"

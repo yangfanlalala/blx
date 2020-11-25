@@ -1,7 +1,7 @@
 package wechat
 
 import (
-	blxHttp "blxee.com/utils/network"
+	blxHttp "github.com/yangfanlalala/blx/network"
 	"encoding/json"
 	"fmt"
 	"io/ioutil"

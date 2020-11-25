@@ -1,7 +1,7 @@
 package wechat
 
 import (
-	"blxee.com/utils/crypto"
+	"github.com/yangfanlalala/blx/crypto"
 	"encoding/base64"
 	"encoding/json"
 )

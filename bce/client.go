@@ -1,7 +1,7 @@
 package bce
 
 import (
-	blxHttp "blxee.com/utils/network"
+	blxHttp "github.com/yangfanlalala/blx/network"
 	"net/http"
 )
 

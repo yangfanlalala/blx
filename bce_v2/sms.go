@@ -1,8 +1,8 @@
 package bce
 
 import (
-	"blxee.com/utils/crypto"
-	"blxee.com/utils/network"
+	"github.com/yangfanlalala/blx/crypto"
+	"github.com/yangfanlalala/blx/network"
 	"encoding/json"
 	"fmt"
 	"io/ioutil"
