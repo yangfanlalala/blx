@@ -10,6 +10,7 @@ import (
 	"io"
 	"io/ioutil"
 	"net/http"
+	"net/url"
 	"strings"
 	"sync"
 	"time"
@@ -73,21 +74,21 @@ func (cli *ossClient) signedString(req *http.Request, canoncalizedResource strin
 	signedString := req.Method + "\n" + contentMd5 + "\n" + contentType + "\n" + date + "\n" + canonicalizedHeader + canoncalizedResource
 
 	h := hmac.New(func() hash.Hash { return sha1.New() }, []byte(cli.AccessSecret))
-	io.WriteString(h, signedString)
+	_, _ = io.WriteString(h, signedString)
 	return "OSS " + cli.AccessID + ":" + base64.StdEncoding.EncodeToString(h.Sum(nil))
 }
 
 func (cli *ossClient) getSignedString(stringToSign string) string {
-	hash := hmac.New(func() hash.Hash {
+	hx := hmac.New(func() hash.Hash {
 		return sha1.New()
 	}, []byte(cli.AccessSecret))
-	io.WriteString(hash, stringToSign)
-	return "OSS " + cli.AccessID + ":" + base64.StdEncoding.EncodeToString(hash.Sum(nil))
+	_, _ = io.WriteString(hx, stringToSign)
+	return "OSS " + cli.AccessID + ":" + base64.StdEncoding.EncodeToString(hx.Sum(nil))
 }
 
 func (cli *ossClient) PutObject(content []byte, object string) error {
-	url := "https://" + cli.Bucket + "." + cli.Endpoint + "/" + strings.TrimLeft(object, "/")
-	req, err := http.NewRequest("PUT", url, bytes.NewReader(content))
+	remote := "https://" + cli.Bucket + "." + cli.Endpoint + "/" + strings.TrimLeft(object, "/")
+	req, err := http.NewRequest("PUT", remote, bytes.NewReader(content))
 	if err != nil {
 		return err
 	}
@@ -97,12 +98,24 @@ func (cli *ossClient) PutObject(content []byte, object string) error {
 	if err != nil {
 		return err
 	}
-	defer rsp.Body.Close()
+	defer func() {_ = rsp.Body.Close()}()
 	body, err := ioutil.ReadAll(rsp.Body)
 	if rsp.StatusCode != http.StatusOK {
 		return fmt.Errorf("put oss object not ok, status code[%d], body[%s]", rsp.StatusCode, body)
 	}
 	return nil
+}
+
+func (cli *ossClient) GetSignedURL (objectKey string, method string, expiredInSec int64) string {
+	if expiredInSec < 0 {
+		return ""
+	}
+	expiration := time.Now().Unix() + expiredInSec
+	signString := method + "\n" + "\n" + "\n" + fmt.Sprintf("%d", expiration) + "\n" + "/" + cli.Bucket + objectKey
+	h := hmac.New(func() hash.Hash { return sha1.New() }, []byte(cli.AccessSecret))
+	_, _ = io.WriteString(h, signString)
+	signedString := url.QueryEscape(base64.StdEncoding.EncodeToString(h.Sum(nil)))
+	return "https://" + cli.Endpoint + objectKey + "?" + "Expires=" + fmt.Sprintf("%d", expiration) + "&OSSAccessKeyId=" + cli.AccessID + "&Signature=" + signedString
 }
 
 func (cli *ossClient) GetObject() ([]byte, error) {
@@ -129,7 +142,7 @@ func (cli *ossClient) WebPostObject(path string, sizeBytes int, expired time.Tim
 	hmc := hmac.New(func() hash.Hash {
 		return sha1.New()
 	}, []byte(cli.AccessSecret))
-	io.WriteString(hmc, policy)
+	_, _ = io.WriteString(hmc, policy)
 	signature := base64.StdEncoding.EncodeToString(hmc.Sum([]byte("")))
 	form := &PostForm{
 		Policy:      policy,
