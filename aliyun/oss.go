@@ -115,7 +115,7 @@ func (cli *ossClient) GetSignedURL (objectKey string, method string, expiredInSe
 	h := hmac.New(func() hash.Hash { return sha1.New() }, []byte(cli.AccessSecret))
 	_, _ = io.WriteString(h, signString)
 	signedString := url.QueryEscape(base64.StdEncoding.EncodeToString(h.Sum(nil)))
-	return "https://" + cli.Endpoint + objectKey + "?" + "Expires=" + fmt.Sprintf("%d", expiration) + "&OSSAccessKeyId=" + cli.AccessID + "&Signature=" + signedString
+	return "https://" + cli.Bucket + "." + cli.Endpoint + objectKey + "?" + "Expires=" + fmt.Sprintf("%d", expiration) + "&OSSAccessKeyId=" + cli.AccessID + "&Signature=" + signedString
 }
 
 func (cli *ossClient) GetObject() ([]byte, error) {
